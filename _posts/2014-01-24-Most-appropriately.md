@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Introducting the App <-> Infrastructure blog"					# Title of the post
+title: "Introducing the App <-> Infrastructure blog"					# Title of the post
 description: Some description		# Description of the post, used for Facebook Opengraph & Twitter
 headline: Some headline				# Will appear in bold letters on top of the post
 modified: YYYY-MM-DD				# Date
