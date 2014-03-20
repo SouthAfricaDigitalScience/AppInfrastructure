@@ -13,7 +13,7 @@ animated_fins:	  true
 # Specify the fin color in RGB value
 fin_color:        "255,255,255"
 # Change url to your domain. Leave localhost server or blank when working locally.
-url:              http://appinfrastructure.github.io
+url:              http://southafricadigitalscience.github.io/AppInfrastructure
 
 # Owner/author information
 owner:
