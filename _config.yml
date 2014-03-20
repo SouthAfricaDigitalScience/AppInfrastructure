@@ -53,8 +53,8 @@ links:
     url: /categories
   - title: Tags
     url: /tags
-  - title: Who are we ?
-    url: http://www.sagrid.ac.za
+#  - title: Who are we ?
+#    url: /sagrid
 
 # http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 timezone:    Africa/Johannesburg
