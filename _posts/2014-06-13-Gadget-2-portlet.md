@@ -78,7 +78,7 @@ Since GADGET will be compiled on the target infrastructure (grid site, cloud sit
 This can be done by restricting the input format available to the user, showing them only Y/N boxes where a binary toggle is applicable, providing warnings that parameters which will result in long run, parameters which are not cosmologically or astrophysically appropriate, etc. We've made some decent progress towards implementing this (thanks @ccarrubba and @PrimoFurno) - a screenshot of a recent build is shown below in Figure 2.
 
 <figure>
-	<img src="https://github.com/SouthAfricaDigitalScience/GADGET-portlet/blob/master/screenshots/screenshotGadgetInterface.png">
+	<img src="https://raw.githubusercontent.com/SouthAfricaDigitalScience/GADGET-portlet/master/screenshots/screenshotGadgetInterface.png">
 	<figcaption>Figure 2: GUI under development for guiding the user through the creation of input parameter files </figcaption>
 </figure>
 
