@@ -69,72 +69,57 @@ Typical usage of GADGET can be seen in figure 1:
 
 ## GADGET compilation *on the fly*
 
-Much of GADGET's functionality is defined in the Makefile. This means that GADGET needs to be recompiled just before runtime, with the Makefile of the run. Aspects of GADGET which are changed by the Makefile are :
+Much of GADGET's functionality is defined in the Makefile, or in parameters passed to the compiler. This means that GADGET needs to be recompiled just before runtime, with the Makefile of the run, which has to be consistent of course with both the initial conditions as well as the parameter file provided. 
 
-````
-#--------------------------------------- Basic operation mode of code
-#OPT   +=  -DPERIODIC 
-OPT   +=  -DUNEQUALSOFTENINGS
-````
+## Input validation and UI
 
-... periodic boundary conditions ...
-````
-#--------------------------------------- Things that are always recommended
-OPT   +=  -DPEANOHILBERT
-OPT   +=  -DWALLCLOCK   
+Since GADGET will be compiled on the target infrastructure (grid site, cloud site, HPC centre) that the portal submits it to, it will be too late to change anything and prevent jobs from being aborted if the input parameters and initial conditions are in conflict with the GADGET run parameters. This means that the portlet needs to validate input ***before*** submitting to the infrastructure, by making as many sanity checks on the configuration as possible. 
 
-
-#--------------------------------------- TreePM Options
-#OPT   +=  -DPMGRID=128
-#OPT   +=  -DPLACEHIGHRESREGION=3
-#OPT   +=  -DENLARGEREGION=1.2
-#OPT   +=  -DASMTH=1.25
-#OPT   +=  -DRCUT=4.5
-````
-... options of the TreePM functionality of the code ... 
-
-````
-#--------------------------------------- Single/Double Precision
-#OPT   +=  -DDOUBLEPRECISION      
-#OPT   +=  -DDOUBLEPRECISION_FFTW      
-
-
-#--------------------------------------- Time integration options
-OPT   +=  -DSYNCHRONIZATION
-#OPT   +=  -DFLEXSTEPS
-#OPT   +=  -DPSEUDOSYMMETRIC
-#OPT   +=  -DNOSTOP_WHEN_BELOW_MINTIMESTEP
-#OPT   +=  -DNOPMSTEPADJUSTMENT
-
-
-#--------------------------------------- Output 
-#OPT   +=  -DHAVE_HDF5  
-#OPT   +=  -DOUTPUTPOTENTIAL
-#OPT   +=  -DOUTPUTACCELERATION
-#OPT   +=  -DOUTPUTCHANGEOFENTROPY
-#OPT   +=  -DOUTPUTTIMESTEP
-
-
-#--------------------------------------- Things for special behaviour
-#OPT   +=  -DNOGRAVITY     
-#OPT   +=  -DNOTREERND 
-#OPT   +=  -DNOTYPEPREFIX_FFTW        
-#OPT   +=  -DLONG_X=60
-#OPT   +=  -DLONG_Y=5
-#OPT   +=  -DLONG_Z=0.2
-#OPT   +=  -DTWODIMS
-#OPT   +=  -DSPH_BND_PARTICLES
-#OPT   +=  -DNOVISCOSITYLIMITER
-#OPT   +=  -DCOMPUTE_POTENTIAL_ENERGY
-#OPT   +=  -DLONGIDS
-#OPT   +=  -DISOTHERM_EQS
-#OPT   +=  -DADAPTIVE_GRAVSOFT_FORGAS
-#OPT   +=  -DSELECTIVE_NO_GRAVITY=2+4+8+16
-```
+This can be done by restricting the input format available to the user, showing them only Y/N boxes where a binary toggle is applicable, providing warnings that parameters which will result in long run, parameters which are not cosmologically or astrophysically appropriate, etc. 
 
 # Current status
 
+We are in a period of intense development right now and should be until the end of week 25, which is the date for the first beta of the project. To keep up to date with the project, you can 
+  
+  1. Check the Agile Dashboard : https://waffle.io/southafricadigitalscience/gadget-portlet, where you can see the state of development
+  1. Check Github project page : https://github.com/SouthAfricaDigitalScience/GADGET-portlet, where you can find information about the project, wiki, etc.
+  1. Check the build status : http://ci.sagrid.ac.za:8080/view/All/job/GADGET2-portlet/
+  1. Check this blog :)
+  
+A brief summary of the state as of Friday 13/06 is given below.
+ 
+## GADGET-2 build status
+The application itself, as well as its dependencies are passing build tests on our [continuous integration](http:ci.sagrid.ac.za:8080) server. In order to actually execute the code, it of course needs to be on a site which can do so; we plan to do this by putting GADGET and dependencies in our [CVMFS](cernvm.cern.ch/portal/filesystem) repository at apprepo.sagrid.ac.za (this is almost finished). We still need to enable promotion of build artifacts from Jenkins to CVMFS, but this will be done as soon as we can solve the CVMFS mounting issue. Sites will then be able to mount CVMFS easily, and GADGET will be available without further intervention. 
+
+One outstanding task is the definition of a functional test for GADGET, which would be a job which 
+  
+  1. Uses MAGIC to create an initial condition file
+  1. Compiles GADGET with a specified default setup
+  1. makes a short run of GADGET to check whether it can actually be executed. 
+  
+## Portlet development status
+This is currently being implemented by @ccarrubba as a series of input forms, which will guide the novice user through the options available, allowing them to have a graphical means to generate their config and input files. Validation will be performed on these parameters (which is currently being done by @vale-anna.
+
+We will be making available a dev machine on which to actually deploy the WAR which is created by Jenkins during the portlet build phase, to provide the end users a "live" system with which to interact. 
+
 # Feedback required ! 
 
+At this point, we need some feedback ! Are we doing the right thing ? Are these features desirable ? Should the interface be simpler or more feature-rich ? 
+
+As we discussed above, in our interactions with astronomers at the University of the Western Cape (who are our primary contact for this project), we have been told that such a portlet could be very useful to postgraduate and undergraduate students who are getting to grips with GADGET. We think that an "intelligent" UI with a verbose and graphical interface could help them understand how GADGET works, and speed up their usage of it. 
+
+However, when it comes to "serious" research with GADGET, we expect that forcing the user to go through the process of inserting and changing values every run might be somewhat tedious. Therefore, we think of providing two different interfaces and asking the user up front if they are an "expert" or "novice", to determine their interface. Of course, since we are using federated identity management for AuthN/AuthZ, we can also assign these roles to users *a-priori* and expose the relevant interface to them behind the scenes. 
+
+What we hope for in the long run is that this service could be handed over to the research community interested, allowing them to manage the usage of it themselves - they're the experts, after all ! 
+
+For this to work, we need direct and constant feedback from the user. So... 
+
+  1. If you already have a Github account, [open an issue](https://github.com/SouthAfricaDigitalScience/GADGET-portlet/issues/new?title=%22New feature request for GADGET portlet%22&labels=requested) (tag it "requested")
+  1. Comment right here with Disqus - make sure to mark your comment "Feature Request"
+  1. If you're hardcore, fork the project and send us a pull request
+  1. ... or just drop a mail to bbecker@csir.co.za
+
+Till next time ! 
+  
 # Footnotes and References
 [^UX]: *User Experience* - this is the process by which user feedback is requested and incorporated into the design of the product. 
